@@ -1,32 +1,31 @@
-n = int(input())
-store = list(map(int, input().split()))
+import sys
 
-m = int(input())
-customer = list(map(int, input().split()))
+n, m = map(int, sys.stdin.readline().rstrip().split())
+dduck = list(map(int, sys.stdin.readline().rstrip().split()))
 
-#빠른 탐색을 위해 매장 배열을 정렬
-store.sort()
+# 떡 내림차순 정렬
+dduck.sort(reverse=True)
 
-# 손님이 찾는게 매장에 있는지 탐색 (이진 탐색 - 재귀)
-def binary_search(arr, target, start, end):
-    if start > end:
-        return None
-    
-    mid = (start + end)//2
+# 가장 긴 떡에서 1만큼 뺀 길이부터 시작
+h = dduck[0] - 1
 
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] > target:
-        return binary_search(arr, target, start, mid-1)
-    else:
-        return binary_search(arr, target, mid+1, end)
 
-result = []
+# 원소 하나씩 보며 주어진 높이를 뺀 나머지 값의 합을 구해서 비교
+def cutting_dduck(d_arr, c_h):
+    sum = 0
+    i = 0
+    while sum < m:
+        if d_arr[i] > c_h:
+            sum = sum + (d_arr[i] - c_h)
+            i += 1
+        else:
+            sum = 0
+            i = 0
+            c_h -= 1
+            continue
 
-for i in customer:
-    isin = binary_search(store, i, 0, n-1)
-    result.append("yes") if isin else result.append("no")
+    return c_h
 
-for r in result:
-    print(r, end=' ')
 
+result = cutting_dduck(dduck, h)
+print(result)
